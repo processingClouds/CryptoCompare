@@ -10,25 +10,39 @@ class CryptoApp {
         let tableBody = document.getElementById('tableBody');
         Object.keys(this.coinData).forEach(coinKey => {
             let coin = this.coinData[coinKey];
-            let coinTableEntry = document.createElement('tr');
-            coinTableEntry.id = coin.Id;
-            let image = document.createElement('img');
-            image.src = 'https://www.cryptocompare.com' + coin.ImageUrl;
-            image.classList.add('coin-image');
-
-            let name = document.createElement('td');
-            name.innerText = coin.FullName;
-
-            let price = document.createElement('td');
-            price.id = coin.Id + '-price';
-            price.innerText = coin.Price;
-
-            coinTableEntry.appendChild(image);
-            coinTableEntry.appendChild(name);
-            coinTableEntry.appendChild(price);
-
-            tableBody.appendChild(coinTableEntry);
-        })
+            let coinTableEntry = document.getElementById(coin.Id);
+            if (coinTableEntry){
+                let price = document.getElementById(coin.Id + '-price');
+                if (coin.Price != price.innerText){
+                    if(coin.Price > price.innerText){
+                        price.className = 'up flash-up';
+                        setTimeout(()=> price.classList.remove('flash-up'),500);
+                    }else {
+                        price.className = 'down flash-down';
+                        setTimeout(()=> price.classList.remove('flash-down'),500);                        
+                    }
+                }
+            } else {                
+                coinTableEntry = document.createElement('tr');
+                coinTableEntry.id = coin.Id;
+                let image = document.createElement('img');
+                image.src = 'https://www.cryptocompare.com' + coin.ImageUrl;
+                image.classList.add('coin-image');
+                
+                let name = document.createElement('td');
+                name.innerText = coin.FullName;
+                
+                let price = document.createElement('td');
+                price.id = coin.Id + '-price';
+                price.innerText = coin.Price;
+                
+                coinTableEntry.appendChild(image);
+                coinTableEntry.appendChild(name);
+                coinTableEntry.appendChild(price);
+                
+                tableBody.appendChild(coinTableEntry);
+            }
+            });
     }
 
     makeApiCall(endPoint, callback){
@@ -57,7 +71,7 @@ class CryptoApp {
                 this.coinData[coinPriceKey].Price = coinPrices[coinPriceKey].USD;
             });
             this.updateCointTable();
-            console.log(this.coinData);
+            // console.log(this.coinData);
         });
         };
 
